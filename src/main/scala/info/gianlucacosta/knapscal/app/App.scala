@@ -3,7 +3,7 @@ package info.gianlucacosta.knapscal.app
 import javafx.stage.Stage
 
 import info.gianlucacosta.helios.apps.{AppInfo, AuroraAppInfo}
-import info.gianlucacosta.helios.fx.apps.{AppBase, AppMain, SplashStage}
+import info.gianlucacosta.helios.fx.application.{AppBase, AppMain, SplashStage}
 import info.gianlucacosta.knapscal.ArtifactInfo
 import info.gianlucacosta.knapscal.icons.MainIcon
 

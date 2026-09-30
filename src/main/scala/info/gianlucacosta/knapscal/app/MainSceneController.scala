@@ -5,7 +5,7 @@ import javafx.fxml.FXML
 import javafx.scene.control.{TextArea, TextField}
 
 import info.gianlucacosta.helios.apps.AppInfo
-import info.gianlucacosta.helios.fx.about.AboutBox
+import info.gianlucacosta.helios.fx.dialogs.about.AboutBox
 import info.gianlucacosta.knapscal.app.branchbound.strategies.{DantzigStrategy, MartelloTothStrategy, OptimizedDantzigStrategy}
 import info.gianlucacosta.knapscal.knapsack.dynamic.full.DynamicProgrammingSolver
 import info.gianlucacosta.knapscal.knapsack.dynamic.optimized.OptimizedDynamicProgrammingSolver
