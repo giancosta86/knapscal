@@ -1,57 +1,38 @@
 buildscript {
     repositories {
-        maven {
-            url 'https://dl.bintray.com/giancosta86/Hephaestus'
-        }
+        //TODO! Del this!
+        mavenLocal()
 
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'info.gianlucacosta.moonlicense:moonlicense-gradle:4.3'
-        classpath 'info.gianlucacosta.moondeploy:moondeploy-gradle:3.3'
-        classpath 'info.gianlucacosta.aurora:aurora:9.0'
+        classpath 'info.gianlucacosta.aurora:aurora:10.0.0-SNAPSHOT'
     }
 }
 
 
 apply plugin: 'scala'
 apply plugin: 'application'
-apply plugin: 'info.gianlucacosta.moondeploy'
-apply plugin: 'info.gianlucacosta.moonlicense'
 apply plugin: 'info.gianlucacosta.aurora'
 
 group = 'info.gianlucacosta.knapscal'
 archivesBaseName = 'knapscal'
-version = '3.5'
+version = '4.0.0-SNAPSHOT'
 
 
 description = 'ScalaFX didactic application for the Knapsack problem'
-
-ext.facebookPage = 'https://www.facebook.com/pages/KnapScal/384118128442058'
 
 
 mainClassName = 'info.gianlucacosta.knapscal.app.App'
 
 
 dependencies {
-    generatedCompile 'org.scala-lang:scala-library:2.11.8'
-
     compile 'org.scala-lang:scala-library:2.11.8'
 
-    compile 'info.gianlucacosta.knapscal:knapscal-core:1.3'
-    compile 'info.gianlucacosta.eighthbridge:eighthbridge:8.2'
-}
-
-
-moonLicense {
-    license = apache2
-
-    productInfo {
-        productName = 'KnapScal'
-        inceptionYear = 2015
-        copyrightHolder = 'Gianluca Costa'
-    }
+    compile 'info.gianlucacosta.knapscal:knapscal-core:2.0.0-SNAPSHOT'
+    compile 'info.gianlucacosta.eighthbridge:eighthbridge:9.0.0-SNAPSHOT'
+    compile 'info.gianlucacosta.helios:helios-fx:7.0.0-SNAPSHOT'
 }
 
 
@@ -62,12 +43,5 @@ aurora {
         name = 'Gianluca Costa'
         email = 'gianluca@gianlucacosta.info'
         url = 'http://gianlucacosta.info/'
-    }
-
-    javaVersion {
-        major = 1
-        minor = 8
-        build = 0
-        update = 91
     }
 }
