@@ -32,7 +32,6 @@ dependencies {
 
     compile 'info.gianlucacosta.knapscal:knapscal-core:2.0.0-SNAPSHOT'
     compile 'info.gianlucacosta.eighthbridge:eighthbridge:9.0.0-SNAPSHOT'
-    compile 'info.gianlucacosta.helios:helios-fx:7.0.0-SNAPSHOT'
 }
 
 
