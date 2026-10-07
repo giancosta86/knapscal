@@ -1,11 +1,10 @@
 package info.gianlucacosta.knapscal.app.branchbound
 
-import info.gianlucacosta.eighthbridge.fx.canvas.GraphCanvas
-import info.gianlucacosta.eighthbridge.fx.canvas.basic.{DefaultBasicLink, DragDropController}
-import info.gianlucacosta.knapscal.app.branchbound.rendering.{KnapScalGraph, KnapScalVertex}
+
+import info.gianlucacosta.eighthbridge.fx.GraphCanvas
+import info.gianlucacosta.knapscal.app.branchbound.rendering.{KnapScalController, KnapScalGraph, KnapScalLink, KnapScalVertex}
 import info.gianlucacosta.knapscal.knapsack.branchbound.Solution
 import info.gianlucacosta.knapscal.knapsack.{ItemsFormatter, Problem}
-
 import scalafx.geometry.Insets
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control._
@@ -60,8 +59,8 @@ private class SolutionDialog(problem: Problem, solution: Solution) extends Alert
 
 
   private val solutionScrollPane = new ScrollPane {
-    content = new GraphCanvas[KnapScalVertex, DefaultBasicLink, KnapScalGraph](
-      new DragDropController(true),
+    content = new GraphCanvas[KnapScalVertex, KnapScalLink, KnapScalGraph](
+      new KnapScalController(),
       KnapScalGraph.create(solution.rootNode)
     )
 

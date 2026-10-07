@@ -1,10 +1,9 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
+import info.gianlucacosta.eighthbridge.fx.VisualVertex
+
 import java.util.UUID
-
-import info.gianlucacosta.eighthbridge.fx.canvas.basic.BasicVertex
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
-
 import scalafx.geometry.Point2D
 
 
@@ -32,20 +31,28 @@ case class KnapScalVertex(
                            selected: Boolean = false,
 
                            id: UUID = UUID.randomUUID()
-                         ) extends BasicVertex[KnapScalVertex] {
+                         ) extends VisualVertex {
   override def text: String =
     KnapScalVertex.formatNode(node)
 
 
-  override def styleClasses: List[String] =
+  override def styleClasses: Set[String] =
     if (node.isSolution)
-      List("solution")
+      Set("solution")
     else if (node.isStopped)
-      List("stopped")
+      Set("stopped")
     else
-      List()
+      Set()
 
 
-  override def visualCopy(center: Point2D, selected: Boolean): KnapScalVertex =
-    copy(center = center, selected = selected)
+  override def visualCopy(
+                           text: String,
+                           center: Point2D,
+                           selected: Boolean,
+                           styleClasses: Set[String]
+                         ): KnapScalVertex.this.type =
+    copy(
+      center= center,
+      selected = selected
+    ).asInstanceOf[this.type]
 }

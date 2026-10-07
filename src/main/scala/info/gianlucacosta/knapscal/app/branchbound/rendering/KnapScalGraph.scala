@@ -1,14 +1,12 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
 
-import java.util.UUID
+import info.gianlucacosta.eighthbridge.fx.{DefaultVertexNode, Styles, VisualGraph}
 
-import info.gianlucacosta.eighthbridge.fx.canvas.basic._
+import java.util.UUID
 import info.gianlucacosta.eighthbridge.graphs.point2point.ArcBinding
-import info.gianlucacosta.eighthbridge.graphs.point2point.visual.VisualGraph
 import info.gianlucacosta.knapscal.app.App
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
-
 import scalafx.geometry.{Dimension2D, Point2D}
 
 
@@ -23,7 +21,7 @@ object KnapScalGraph {
 
 
   val Stylesheets = List[String](
-    BasicStyles.resourceUrl.toExternalForm,
+    Styles.resourceUrl.toExternalForm,
     App.getResource("KnapScal.css").toExternalForm
   )
 
@@ -48,7 +46,7 @@ object KnapScalGraph {
 
     val nodeDimensionQueries =
       allNodes.map(node =>
-        BasicVertexNode.DimensionQuery(
+        DefaultVertexNode.DimensionQuery(
           KnapScalVertex.formatNode(node)
         )
       )
@@ -57,7 +55,7 @@ object KnapScalGraph {
     val nodeDimensions: Map[Node, Dimension2D] =
       allNodes
         .zip(
-          BasicVertexNode.getDimensions(
+          DefaultVertexNode.getDimensions(
             KnapScalGraph.Stylesheets,
             nodeDimensionQueries
           )
@@ -144,7 +142,7 @@ object KnapScalGraph {
       }
 
 
-    val (links: List[DefaultBasicLink], bindings: List[ArcBinding]) =
+    val (links: List[KnapScalLink], bindings: List[ArcBinding]) =
       createLinksAndBindings(vertexMap, rootNode)
         .unzip
 
@@ -237,17 +235,17 @@ object KnapScalGraph {
                                       vertexMap: Map[Node, KnapScalVertex],
                                       currentRootNode: Node
                                     ):
-  List[(DefaultBasicLink, ArcBinding)] = {
+  List[(KnapScalLink, ArcBinding)] = {
     val currentRootVertex =
       vertexMap(currentRootNode)
 
-    val takingSequence: List[(DefaultBasicLink, ArcBinding)] =
+    val takingSequence: List[(KnapScalLink, ArcBinding)] =
       currentRootNode.takingNode.map(takingNode => {
         val takingVertex =
           vertexMap(takingNode)
 
         val takingLink =
-          new DefaultBasicLink()
+          KnapScalLink()
 
         val arcBinding =
           ArcBinding(UUID.randomUUID(), currentRootVertex.id, takingVertex.id, takingLink.id)
@@ -259,13 +257,13 @@ object KnapScalGraph {
         .getOrElse(List())
 
 
-    val leavingSequence: List[(DefaultBasicLink, ArcBinding)] =
+    val leavingSequence: List[(KnapScalLink, ArcBinding)] =
       currentRootNode.leavingNode.map(leavingNode => {
         val leavingVertex =
           vertexMap(leavingNode)
 
         val leavingLink =
-          new DefaultBasicLink
+          KnapScalLink()
 
 
         val arcBinding =
@@ -283,15 +281,15 @@ object KnapScalGraph {
 
 case class KnapScalGraph private(
                                   vertexes: Set[KnapScalVertex],
-                                  links: Set[DefaultBasicLink],
+                                  links: Set[KnapScalLink],
                                   bindings: Set[ArcBinding],
                                   vertexDimensions: Map[KnapScalVertex, Dimension2D]
-                                ) extends VisualGraph[KnapScalVertex, DefaultBasicLink, KnapScalGraph] {
+                                ) extends VisualGraph[KnapScalVertex, KnapScalLink] {
 
-  override protected def graphCopy(vertexes: Set[KnapScalVertex], links: Set[DefaultBasicLink], bindings: Set[ArcBinding]): KnapScalGraph =
+  override protected def graphCopy(vertexes: Set[KnapScalVertex], links: Set[KnapScalLink], bindings: Set[ArcBinding]): this.type =
     copy(
       vertexes = vertexes,
       links = links,
       bindings = bindings
-    )
+    ).asInstanceOf[this.type]
 }
