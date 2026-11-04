@@ -7,7 +7,7 @@ import scalafx.geometry.Point2D
 
 
 object KnapScalVertex {
-  def formatNode(node: Node): String =
+  private def getLabel(node: Node): String =
     if (node.isSolution) {
       (
         s"Index = ${node.index}\n"
@@ -22,20 +22,25 @@ object KnapScalVertex {
         + s"${if (node.isStopped) "\n*STOP*" else ""}"
         )
     }
-}
 
-class KnapScalVertex(
-                           val node: Node
-                         ) extends LabeledVisualVertex(
-    new Point2D(50, 50),
-    KnapScalVertex.formatNode(node)
-) {
-  setStyleClasses (
+  private def getStyleClasses(node: Node): Set[String] =
     if (node.isSolution)
       Set("solution")
     else if (node.isStopped)
       Set("stopped")
     else
       Set()
-  )
+
+  def create(node: Node): KnapScalVertex =
+    new KnapScalVertex(node)
+      .setStyleClasses(
+        getStyleClasses(node)
+      )
 }
+
+class KnapScalVertex private (
+                           val node: Node
+                         ) extends LabeledVisualVertex(
+    new Point2D(50, 50),
+    KnapScalVertex.getLabel(node)
+)
