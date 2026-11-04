@@ -32,7 +32,7 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
       graph
         .vertexes
         .map {
-          case (vertex: KnapScalVertex) =>
+          case vertex: KnapScalVertex =>
             val vertexNode =
               vertexNodesByVertex(vertex)
 
