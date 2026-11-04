@@ -55,7 +55,7 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
     val levelNodes: Map[Int, List[Node]] =
       graph
         .fold(List[Node]())((cumulatedVertexes, vertex, _) =>
-          List(vertex.asInstanceOf[KnapScalVertex].node) ++ cumulatedVertexes
+          vertex.asInstanceOf[KnapScalVertex].node :: cumulatedVertexes
         )
         .groupBy(_.level)
 

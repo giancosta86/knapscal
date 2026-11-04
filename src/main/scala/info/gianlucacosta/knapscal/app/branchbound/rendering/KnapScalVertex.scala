@@ -41,6 +41,6 @@ object KnapScalVertex {
 class KnapScalVertex private (
                            val node: Node
                          ) extends LabeledVisualVertex(
-    new Point2D(50, 50),
+    new Point2D(0, 0),
     KnapScalVertex.getLabel(node)
 )
