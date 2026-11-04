@@ -19,8 +19,7 @@ object KnapScalGraph {
   private type Width = Double
   private type Height = Double
 
-
-  val Stylesheets = List[String](
+  val Stylesheets: List[String] = List(
     Styles.resourceUrl.toExternalForm,
     App.getResource("KnapScal.css").toExternalForm
   )
@@ -276,20 +275,4 @@ object KnapScalGraph {
 
     takingSequence ++ leavingSequence
   }
-}
-
-
-case class KnapScalGraph private(
-                                  vertexes: Set[KnapScalVertex],
-                                  links: Set[KnapScalLink],
-                                  bindings: Set[ArcBinding],
-                                  vertexDimensions: Map[KnapScalVertex, Dimension2D]
-                                ) extends VisualGraph[KnapScalVertex, KnapScalLink] {
-
-  override protected def graphCopy(vertexes: Set[KnapScalVertex], links: Set[KnapScalLink], bindings: Set[ArcBinding]): this.type =
-    copy(
-      vertexes = vertexes,
-      links = links,
-      bindings = bindings
-    ).asInstanceOf[this.type]
 }

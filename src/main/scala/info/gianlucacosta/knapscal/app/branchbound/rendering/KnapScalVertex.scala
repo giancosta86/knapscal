@@ -1,8 +1,7 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
-import info.gianlucacosta.eighthbridge.fx.VisualVertex
+import info.gianlucacosta.eighthbridge.fx.graph.{LabeledVisualVertex, VisualVertex}
 
-import java.util.UUID
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 import scalafx.geometry.Point2D
 
@@ -25,34 +24,18 @@ object KnapScalVertex {
     }
 }
 
-case class KnapScalVertex(
-                           node: Node,
-                           center: Point2D,
-                           selected: Boolean = false,
-
-                           id: UUID = UUID.randomUUID()
-                         ) extends VisualVertex {
-  override def text: String =
+class KnapScalVertex(
+                           node: Node
+                         ) extends LabeledVisualVertex(
+    new Point2D(0, 0),
     KnapScalVertex.formatNode(node)
-
-
-  override def styleClasses: Set[String] =
+) {
+  setStyleClasses (
     if (node.isSolution)
       Set("solution")
     else if (node.isStopped)
       Set("stopped")
     else
       Set()
-
-
-  override def visualCopy(
-                           text: String,
-                           center: Point2D,
-                           selected: Boolean,
-                           styleClasses: Set[String]
-                         ): KnapScalVertex.this.type =
-    copy(
-      center= center,
-      selected = selected
-    ).asInstanceOf[this.type]
+  )
 }
