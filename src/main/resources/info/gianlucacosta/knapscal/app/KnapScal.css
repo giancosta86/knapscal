@@ -1,6 +1,8 @@
-.vertex > .label {
-    -fx-font: 14 Arial;
-    -fx-fill: black;
+.vertex .label {
+    -fx-font-family: Arial;
+    -fx-font-size: 14px;
+
+    -fx-text-fill: black;
 }
 
 
@@ -8,12 +10,12 @@
  * SOLUTION
  *----------*/
 
-.solution > .body {
-    -fx-fill: #baffba;
+.solution .label {
+    -fx-background-color: #baffba;
 }
 
-.solution:selected > .body {
-    -fx-fill: #69d469;
+.solution:selected .label {
+    -fx-background-color: #69d469;
 }
 
 
@@ -21,10 +23,10 @@
  * STOPPED
  *---------*/
 
-.stopped > .body {
-    -fx-fill: #f8c7c7;
+.stopped .label {
+    -fx-background-color: #f8c7c7;
 }
 
-.stopped:selected > .body {
-    -fx-fill: #e56767;
+.stopped:selected .label {
+    -fx-background-color: #e56767;
 }
