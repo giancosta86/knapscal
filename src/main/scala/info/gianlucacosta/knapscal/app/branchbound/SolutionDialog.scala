@@ -1,8 +1,7 @@
 package info.gianlucacosta.knapscal.app.branchbound
 
 
-import info.gianlucacosta.eighthbridge.fx.GraphCanvas
-import info.gianlucacosta.knapscal.app.branchbound.rendering.{KnapScalController, KnapScalGraph, KnapScalLink, KnapScalVertex}
+import info.gianlucacosta.knapscal.app.branchbound.rendering.{KnapScalController, KnapScalGraph, KnapScalGraphCanvas}
 import info.gianlucacosta.knapscal.knapsack.branchbound.Solution
 import info.gianlucacosta.knapscal.knapsack.{ItemsFormatter, Problem}
 import scalafx.geometry.Insets
@@ -58,14 +57,16 @@ private class SolutionDialog(problem: Problem, solution: Solution) extends Alert
   }
 
 
-  private val solutionScrollPane = new ScrollPane {
-    content = new GraphCanvas[KnapScalVertex, KnapScalLink, KnapScalGraph](
-      new KnapScalController(),
-      KnapScalGraph.create(solution.rootNode)
-    )
+  private val solutionScrollPane =
+    new ScrollPane {
+      content =
+        new KnapScalGraphCanvas(
+          KnapScalGraph.create(solution.rootNode)
+        )
 
-    hvalue = hmax() / 2
-  }
+      hvalue =
+        hmax() / 2
+    }
 
 
   private val solutionPane = new BorderPane {

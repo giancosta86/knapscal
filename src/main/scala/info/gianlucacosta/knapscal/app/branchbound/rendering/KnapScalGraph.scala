@@ -1,6 +1,7 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
 
+import info.gianlucacosta.eighthbridge.fx.graph.VisualGraph
 import info.gianlucacosta.eighthbridge.fx.{DefaultVertexNode, Styles, VisualGraph}
 
 import java.util.UUID
@@ -25,7 +26,7 @@ object KnapScalGraph {
   )
 
 
-  def create(rootNode: Node): KnapScalGraph = {
+  def create(rootNode: Node): VisualGraph = {
     val nodeParentTuples: List[(Node, Node)] =
       getNodeParentTuples(rootNode)
 
