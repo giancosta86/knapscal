@@ -2,11 +2,25 @@ package info.gianlucacosta.knapscal.app.branchbound.rendering
 
 import info.gianlucacosta.eighthbridge.fx.AdjustingGraphCanvas
 import info.gianlucacosta.eighthbridge.fx.graph.VisualGraph
+import info.gianlucacosta.knapscal.knapsack.branchbound.Node
+import scalafx.geometry.{Dimension2D, Point2D}
 
 class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
   new KnapScalController,
   graph
 ) {
+  private type CenterX =
+    Double
+
+  private type CenterY =
+    Double
+
+  private type Width =
+    Double
+
+  private type Height =
+    Double
+
   private val VerticalSpacing =
     60
 
@@ -14,33 +28,36 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
     40
 
   override protected def adjustGraph(currentGraph: VisualGraph): VisualGraph = {
-    println(s"-------------> There are ${currentGraph.vertexes.size} vertexes in the graph!")
-
-    currentGraph
-
-    /*val nodeDimensionQueries =
-      allNodes.map(node =>
-        DefaultVertexNode.DimensionQuery(
-          KnapScalVertex.formatNode(node)
-        )
-      )
-
-
     val nodeDimensions: Map[Node, Dimension2D] =
-      allNodes
-        .zip(
-          DefaultVertexNode.getDimensions(
-            KnapScalGraph.Stylesheets,
-            nodeDimensionQueries
-          )
-        )
+      graph
+        .vertexes
+        .map {
+          case (vertex: KnapScalVertex) =>
+            val vertexNode =
+              vertexNodesByVertex(vertex)
+
+            val dimension =
+              new Dimension2D(
+                vertexNode.width(),
+                vertexNode.height()
+              )
+
+            vertex.node -> dimension
+        }
         .toMap
 
+    val rootVertex =
+      graph
+        .rootVertexes
+        .head
+        .asInstanceOf[KnapScalVertex]
 
     val levelNodes: Map[Int, List[Node]] =
-      allNodes
+      graph
+        .fold(List[Node]())((cumulatedVertexes, vertex, _) =>
+          List(vertex.asInstanceOf[KnapScalVertex].node) ++ cumulatedVertexes
+        )
         .groupBy(_.level)
-
 
     val levelHeights: Map[Int, Height] =
       levelNodes.map {
@@ -49,15 +66,12 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
             nodes.map(node => nodeDimensions(node).height).max
       }
 
-
     val lastLevelIndex =
       levelNodes.keySet.max
 
-
     val levelCenterYs: Map[Int, CenterY] = {
       val rootCenterY =
-        VerticalSpacing + nodeDimensions(rootNode).height / 2
-
+        VerticalSpacing + nodeDimensions(rootVertex.node).height / 2
 
       Range.inclusive(1, lastLevelIndex)
         .foldLeft(List(rootCenterY))((cumulatedCenterYs, currentLevel) => {
@@ -77,10 +91,6 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
         .toMap
     }
 
-
-    require(levelCenterYs.size == lastLevelIndex + 1)
-
-
     val centerXs: Map[Node, CenterX] =
       Range.inclusive(lastLevelIndex, 0, -1)
         .foldLeft(Map[Node, CenterX]())((cumulatedCenterXs, levelIndex) => {
@@ -89,33 +99,19 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
           cumulatedCenterXs ++ getLevelCenterXs(cumulatedCenterXs, currentNodes, nodeDimensions)
         })
 
-
-    require(
-      centerXs.size == allNodes.size,
-      s"Required nodes: ${allNodes.size}. Found: ${centerXs.size}"
-    )
-
-
-    val vertexMap: Map[Node, KnapScalVertex] =
-      allNodes.map(node =>
-          node -> KnapScalVertex(
-            node,
+    graph.vertexes.foldLeft(graph) {
+      case (cumulatedGraph: VisualGraph, vertex: KnapScalVertex) =>
+        val updatedVertex =
+          vertex.setCenter(
             new Point2D(
-              centerXs(node),
-              levelCenterYs(node.level)
+              centerXs(vertex.node),
+              levelCenterYs(vertex.node.level)
             )
           )
-        )
-        .toMap
 
-
-    val vertexDimensions: Map[KnapScalVertex, Dimension2D] =
-      nodeDimensions.map {
-        case (node, dimension) =>
-          vertexMap(node) -> dimension
-      }
-
-    None
+        cumulatedGraph
+          .updateVertex(updatedVertex)
+    }
   }
 
   private def getLevelCenterXs(lowerLevelCenterXs: Map[Node, CenterX], levelNodes: List[Node], nodeSizes: Map[Node, Dimension2D])
@@ -158,7 +154,6 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
               }
             })
 
-
           val currentTuple: (Node, (CenterX, Width)) =
             currentNode ->(currentCenterX, currentWidth)
 
@@ -168,6 +163,6 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
         case (node, (centerX, _)) =>
           node -> centerX
       }
-      .toMap*/
+      .toMap
   }
 }
