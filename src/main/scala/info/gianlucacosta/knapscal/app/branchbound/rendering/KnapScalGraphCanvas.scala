@@ -132,10 +132,8 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
               lowerLevelCenterXs(leavingNode)
             )
 
-
           val currentWidth =
             nodeSizes(currentNode).width
-
 
           val currentCenterX: CenterX =
             cumulatedTuplesInLevel.headOption.map(previousTupleInLevel => {
