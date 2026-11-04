@@ -25,9 +25,9 @@ object KnapScalVertex {
 }
 
 class KnapScalVertex(
-                           node: Node
+                           val node: Node
                          ) extends LabeledVisualVertex(
-    new Point2D(0, 0),
+    new Point2D(50, 50),
     KnapScalVertex.formatNode(node)
 ) {
   setStyleClasses (

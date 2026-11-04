@@ -17,7 +17,7 @@ private class SolutionDialog(problem: Problem, solution: Solution) extends Alert
   resizable = true
 
   dialogPane().getStylesheets.addAll(
-    KnapScalGraph.Stylesheets: _*
+    rendering.Stylesheets: _*
   )
 
   private val solutionTextArea = new TextArea {
