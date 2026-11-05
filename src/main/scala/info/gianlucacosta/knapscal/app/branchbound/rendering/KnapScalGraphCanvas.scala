@@ -1,166 +1,223 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
-import info.gianlucacosta.eighthbridge.fx.AdjustingGraphCanvas
-import info.gianlucacosta.eighthbridge.fx.graph.VisualGraph
-import info.gianlucacosta.knapscal.knapsack.branchbound.Node
-import scalafx.geometry.{Dimension2D, Point2D}
+import info.gianlucacosta.eighthbridge.fx.{AdjustingGraphCanvas, VertexNode}
+import info.gianlucacosta.eighthbridge.fx.graph.{VisualGraph, VisualVertex}
+import scalafx.geometry.Point2D
+import scalafx.Includes._
 
 class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
   new KnapScalController,
   graph
 ) {
-  private type CenterX =
-    Double
-
-  private type CenterY =
-    Double
-
-  private type Width =
-    Double
-
-  private type Height =
-    Double
-
-  private val VerticalSpacing =
+  private val VerticalGap =
     60
 
-  private val HorizontalSpacing =
+  private val MinHorizontalGap =
     40
 
-  override protected def adjustGraph(currentGraph: VisualGraph): VisualGraph = {
-    val nodeDimensions: Map[Node, Dimension2D] =
-      graph
-        .vertexes
-        .map {
-          case vertex: KnapScalVertex =>
-            val vertexNode =
-              vertexNodesByVertex(vertex)
+  override protected def adjustGraph(graph: VisualGraph): VisualGraph = {
+    val vertexNodesByLevel: Map[Int, List[VertexNode]] =
+      getVertexNodesByLevel(graph)
 
-            val dimension =
-              new Dimension2D(
-                vertexNode.width(),
-                vertexNode.height()
+    val totalWidthByLevel: Map[Int, Double] =
+      vertexNodesByLevel
+        .mapValues(nodesInLevel =>
+          MinHorizontalGap * (nodesInLevel.size + 1) +
+            nodesInLevel.map(_.width()).sum
+        )
+
+    val graphWidth: Double =
+      totalWidthByLevel
+        .values
+        .max
+
+    val heightByLevel: Map[Int, Double] =
+      vertexNodesByLevel
+        .mapValues(
+          _.map(_.height())
+            .max
+        )
+
+    val levels: Int =
+      vertexNodesByLevel
+        .keySet
+        .size
+
+    val verticalCenterByLevel: Map[Int, Double] =
+      Range(1, levels)
+        .foldLeft(Map(0 ->
+          (VerticalGap + heightByLevel(0) / 2)
+        ))((cumulatedMap, level) => {
+          val levelCenter =
+            cumulatedMap(level - 1) + heightByLevel(level - 1) / 2 + VerticalGap + heightByLevel(level) / 2
+
+          cumulatedMap +
+            (level -> levelCenter)
+        })
+
+    val leafLevel: Int =
+      levels - 1
+
+    val leafVertexNodes: List[VertexNode] =
+      vertexNodesByLevel(leafLevel)
+
+    val leafHorizontalGap: Double =
+      (graphWidth - leafVertexNodes.map(_.width()).sum) /
+        (leafVertexNodes.size + 1)
+
+    val leafHorizontalCenters: List[Double] =
+      Range(1, leafVertexNodes.size)
+        .foldLeft(
+          List(leafHorizontalGap + leafVertexNodes.head.width() / 2)
+        )((cumulatedHorizontalCenters, index) =>
+          cumulatedHorizontalCenters :+
+            cumulatedHorizontalCenters.last +
+              leafVertexNodes(index - 1).width() / 2 +
+              leafHorizontalGap +
+              leafVertexNodes(index).width()
+        )
+
+    val leafVerticalCenter =
+      verticalCenterByLevel(leafLevel)
+
+
+    val graphWithUpdatedLeafVertexes: VisualGraph =
+      leafVertexNodes
+        .zipWithIndex
+        .foldLeft(graph) { case (cumulatedGraph, (leafVertexNode, index)) =>
+          val updatedLeafVertex =
+            leafVertexNode
+              .vertex()
+              .setCenter(
+                new Point2D(
+                  leafHorizontalCenters(index),
+                  leafVerticalCenter
+                )
               )
 
-            vertex.node -> dimension
+          cumulatedGraph
+            .updateVertex(updatedLeafVertex)
         }
-        .toMap
 
-    val rootVertex =
-      graph
-        .rootVertexes
-        .head
-        .asInstanceOf[KnapScalVertex]
+    Range(0, leafLevel)
+      .reverse
+      .foldLeft(graphWithUpdatedLeafVertexes)((outerCumulatedGraph, level) => {
+        val verticalCenter =
+          verticalCenterByLevel(level)
 
-    val levelNodes: Map[Int, List[Node]] =
-      graph
-        .fold(List[Node]())((cumulatedVertexes, vertex, _) =>
-          vertex.asInstanceOf[KnapScalVertex].node :: cumulatedVertexes
-        )
-        .groupBy(_.level)
+        vertexNodesByLevel(level)
+          .zipWithIndex
+          .foldLeft(outerCumulatedGraph) {
+            case (innerCumulatedGraph, (vertexNode, index)) =>
+              val vertex =
+                vertexNode.vertex()
 
-    val levelHeights: Map[Int, Height] =
-      levelNodes.map {
-        case (levelIndex, nodes) =>
-          levelIndex ->
-            nodes.map(node => nodeDimensions(node).height).max
-      }
+              val successorHorizontalCenters: List[Double] =
+                innerCumulatedGraph
+                  .getSuccessors(vertex)
+                  .toList
+                  .map(_.center.x)
+                  .sorted
 
-    val lastLevelIndex =
-      levelNodes.keySet.max
+              val vertexHorizontalCenter: Double =
+                successorHorizontalCenters match {
+                  case leftCenter::rightCenter::Nil =>
+                    leftCenter + (rightCenter - leftCenter) / 2
 
-    val levelCenterYs: Map[Int, CenterY] = {
-      val rootCenterY =
-        VerticalSpacing + nodeDimensions(rootVertex.node).height / 2
+                  case singleCenter::Nil =>
+                    singleCenter
 
-      Range.inclusive(1, lastLevelIndex)
-        .foldLeft(List(rootCenterY))((cumulatedCenterYs, currentLevel) => {
-          val previousLevel = currentLevel - 1
-          val previousHeight = levelHeights(previousLevel)
-          val previousCenterY = cumulatedCenterYs.head
+                  case Nil =>
+                    index match {
+                      case 0 =>
+                        MinHorizontalGap +
+                          vertexNode.width() / 2
 
-          val currentHeight = levelHeights(currentLevel)
+                      case _ =>
+                        val previousVertexNodeInLevel: VertexNode =
+                          vertexNodesByLevel(level)(index - 1)
 
-          val currentCenterY = previousCenterY + previousHeight / 2 + VerticalSpacing + currentHeight / 2
+                        val previousHorizontalCenter: Double =
+                          innerCumulatedGraph
+                            .vertexesById(
+                              previousVertexNodeInLevel
+                                .vertex()
+                                .id
+                            )
+                            .center
+                            .x
 
-          List(currentCenterY) ++ cumulatedCenterYs
-        })
-        .reverse
-        .zipWithIndex
-        .map(pair => (pair._2, pair._1))
-        .toMap
-    }
+                        previousHorizontalCenter +
+                          previousVertexNodeInLevel.width() / 2 +
+                          MinHorizontalGap +
+                          vertexNode.width() / 2
+                    }
 
-    val centerXs: Map[Node, CenterX] =
-      Range.inclusive(lastLevelIndex, 0, -1)
-        .foldLeft(Map[Node, CenterX]())((cumulatedCenterXs, levelIndex) => {
-          val currentNodes = levelNodes(levelIndex)
+                  case _ =>
+                    throw new AssertionError("This should never match")
+                }
 
-          cumulatedCenterXs ++ getLevelCenterXs(cumulatedCenterXs, currentNodes, nodeDimensions)
-        })
+              val updatedVertex =
+                vertex.setCenter(
+                  new Point2D(
+                    vertexHorizontalCenter,
+                    verticalCenter
+                  )
+                )
 
-    graph.vertexes.foldLeft(graph) {
-      case (cumulatedGraph: VisualGraph, vertex: KnapScalVertex) =>
-        val updatedVertex =
-          vertex.setCenter(
-            new Point2D(
-              centerXs(vertex.node),
-              levelCenterYs(vertex.node.level)
-            )
-          )
-
-        cumulatedGraph
-          .updateVertex(updatedVertex)
-    }
+              innerCumulatedGraph
+                .updateVertex(updatedVertex)
+            }
+      })
   }
 
-  private def getLevelCenterXs(lowerLevelCenterXs: Map[Node, CenterX], levelNodes: List[Node], nodeSizes: Map[Node, Dimension2D])
-  : Map[Node, CenterX] = {
+  private def getVertexNodesByLevel(graph: VisualGraph): Map[Int, List[VertexNode]] = {
+    val rootVertex =
+      graph.rootVertexes.head
 
-    levelNodes
-      .foldLeft(List[(Node, (CenterX, Width))]())(
-        (cumulatedTuplesInLevel, currentNode) => {
+    getLevelAndVertexNodeTuples(
+      Nil,
+      rootVertex
+    )
+      .groupBy(_._1)
+      .mapValues(_.map(_._2))
+  }
 
-          val takingNodeCenterXOption: Option[CenterX] =
-            currentNode.takingNode.map(takingNode =>
-              lowerLevelCenterXs(takingNode)
+  private def getLevelAndVertexNodeTuples(
+                                           cumulatedTuples: List[(Int, VertexNode)],
+                                           vertex: VisualVertex
+                                         ): List[(Int, VertexNode)] = {
+    val node =
+      vertex
+        .asInstanceOf[KnapScalVertex]
+        .node
+
+    val vertexNode =
+      vertexNodesByVertex(vertex)
+
+    val tuplesWithVertex =
+      cumulatedTuples :+
+        (node.level -> vertexNode)
+
+    val successors =
+      graph.getSuccessors(vertex)
+        .map(_.asInstanceOf[KnapScalVertex])
+
+    List(
+      node.takingNode,
+      node.leavingNode
+    ).foldLeft(tuplesWithVertex)((updatedTuples, optionalSubNode) =>
+      optionalSubNode.flatMap(subNode =>
+        successors
+          .find(_.node == subNode)
+          .map(subVertex =>
+            getLevelAndVertexNodeTuples(
+              updatedTuples,
+              subVertex
             )
-
-
-          val leavingNodeCenterXOption: Option[CenterX] =
-            currentNode.leavingNode.map(leavingNode =>
-              lowerLevelCenterXs(leavingNode)
-            )
-
-          val currentWidth =
-            nodeSizes(currentNode).width
-
-          val currentCenterX: CenterX =
-            cumulatedTuplesInLevel.headOption.map(previousTupleInLevel => {
-              val (_, (previousCenterX: CenterX, previousWidth: Width)) = previousTupleInLevel
-
-              previousCenterX + previousWidth / 2 + HorizontalSpacing + currentWidth / 2
-            }).getOrElse({
-              if (takingNodeCenterXOption.isEmpty && leavingNodeCenterXOption.isEmpty)
-                HorizontalSpacing + currentWidth / 2
-              else if (takingNodeCenterXOption.isEmpty || leavingNodeCenterXOption.isEmpty)
-                takingNodeCenterXOption.getOrElse(leavingNodeCenterXOption.get)
-              else {
-                val takingNode = currentNode.takingNode.get
-                val takingNodeWidth = nodeSizes(takingNode).width
-                takingNodeCenterXOption.get + takingNodeWidth / 2 + HorizontalSpacing / 2
-              }
-            })
-
-          val currentTuple: (Node, (CenterX, Width)) =
-            currentNode ->(currentCenterX, currentWidth)
-
-          List(currentTuple) ++ cumulatedTuplesInLevel
-        })
-      .map {
-        case (node, (centerX, _)) =>
-          node -> centerX
-      }
-      .toMap
+          )
+      )
+        .getOrElse(updatedTuples)
+    )
   }
 }
