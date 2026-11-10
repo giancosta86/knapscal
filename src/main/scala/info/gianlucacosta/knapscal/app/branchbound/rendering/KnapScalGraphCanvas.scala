@@ -5,15 +5,15 @@ import info.gianlucacosta.eighthbridge.fx.graph.{VisualGraph, VisualVertex}
 import scalafx.geometry.Point2D
 import scalafx.Includes._
 
-class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
-  new KnapScalController,
-  graph
-) {
+class KnapScalGraphCanvas extends AdjustingGraphCanvas {
   private val VerticalGap =
     60
 
   private val MinHorizontalGap =
     40
+
+  controller() =
+    new KnapScalController
 
   override protected def adjustGraph(graph: VisualGraph): VisualGraph = {
     val vertexNodesByLevel: Map[Int, List[VertexNode]] =
@@ -200,7 +200,7 @@ class KnapScalGraphCanvas(graph: VisualGraph) extends AdjustingGraphCanvas(
         (node.level -> vertexNode)
 
     val successors =
-      graph.getSuccessors(vertex)
+      graph().getSuccessors(vertex)
         .map(_.asInstanceOf[KnapScalVertex])
 
     List(

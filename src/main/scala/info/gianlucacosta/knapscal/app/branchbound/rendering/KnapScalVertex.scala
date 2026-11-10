@@ -1,13 +1,15 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
-import info.gianlucacosta.eighthbridge.fx.graph.{LabeledVisualVertex, VisualVertex}
-
+import info.gianlucacosta.eighthbridge.fx.graph.VisualVertex
+import info.gianlucacosta.eighthbridge.graphs.facets.HasLabel
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 import scalafx.geometry.Point2D
 
 
-object KnapScalVertex {
-  private def getLabel(node: Node): String =
+class KnapScalVertex(val node: Node)
+  extends VisualVertex
+    with HasLabel {
+  override def label: String =
     if (node.isSolution) {
       (
         s"Index = ${node.index}\n"
@@ -23,24 +25,11 @@ object KnapScalVertex {
         )
     }
 
-  private def getStyleClasses(node: Node): Set[String] =
+  override def styleClasses: Set[String] =
     if (node.isSolution)
       Set("solution")
     else if (node.isStopped)
       Set("stopped")
     else
       Set()
-
-  def create(node: Node): KnapScalVertex =
-    new KnapScalVertex(node)
-      .setStyleClasses(
-        getStyleClasses(node)
-      )
 }
-
-class KnapScalVertex private (
-                           val node: Node
-                         ) extends LabeledVisualVertex(
-    new Point2D(0, 0),
-    KnapScalVertex.getLabel(node)
-)

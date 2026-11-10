@@ -8,7 +8,7 @@ import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 object KnapScalGraph {
   def create(rootNode: Node): VisualGraph = {
     val rootVertex =
-      KnapScalVertex.create(rootNode)
+      new KnapScalVertex(rootNode)
 
     val rootGraph =
       new VisualGraph()
@@ -27,12 +27,12 @@ object KnapScalGraph {
     val takingGraph: VisualGraph =
       node.takingNode.map(takingNode => {
         val takingVertex =
-          KnapScalVertex.create(takingNode)
+          new KnapScalVertex(takingNode)
 
         val updatedGraph =
           cumulatedGraph
             .addVertex(takingVertex)
-            .addArc(vertex, takingVertex, VisualLink.DefaultDirected)
+            .addLink(vertex, takingVertex, VisualLink.createDirected())
 
         createSubGraph(updatedGraph, takingVertex)
       })
@@ -41,12 +41,12 @@ object KnapScalGraph {
     val leavingGraph: VisualGraph =
       node.leavingNode.map(leavingNode => {
         val leavingVertex =
-          KnapScalVertex.create(leavingNode)
+          new KnapScalVertex(leavingNode)
 
         val updatedGraph =
           takingGraph
             .addVertex(leavingVertex)
-            .addArc(vertex, leavingVertex, VisualLink.DefaultDirected)
+            .addLink(vertex, leavingVertex, VisualLink.createDirected())
 
         createSubGraph(updatedGraph, leavingVertex)
       })

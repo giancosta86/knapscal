@@ -8,7 +8,7 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control._
 import scalafx.scene.layout.BorderPane
-
+import scalafx.Includes._
 
 private class SolutionDialog(problem: Problem, solution: Solution) extends Alert(AlertType.Information) {
   title = "Knapsack - Branch & Bound"
@@ -60,9 +60,10 @@ private class SolutionDialog(problem: Problem, solution: Solution) extends Alert
   private val solutionScrollPane =
     new ScrollPane {
       content =
-        new KnapScalGraphCanvas(
-          KnapScalGraph.create(solution.rootNode)
-        )
+        new KnapScalGraphCanvas {
+          graph() =
+            KnapScalGraph.create(solution.rootNode)
+        }
 
       hvalue =
         hmax() / 2
