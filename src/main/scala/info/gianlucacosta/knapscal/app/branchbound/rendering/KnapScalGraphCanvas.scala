@@ -88,6 +88,7 @@ class KnapScalGraphCanvas extends AdjustingGraphCanvas {
           val updatedLeafVertex =
             leafVertexNode
               .vertex()
+              .asInstanceOf[KnapScalVertex]
               .setCenter(
                 new Point2D(
                   leafHorizontalCenters(index),
@@ -158,12 +159,14 @@ class KnapScalGraphCanvas extends AdjustingGraphCanvas {
                 }
 
               val updatedVertex =
-                vertex.setCenter(
-                  new Point2D(
-                    vertexHorizontalCenter,
-                    verticalCenter
+                vertex
+                  .asInstanceOf[KnapScalVertex]
+                  .setCenter(
+                    new Point2D(
+                      vertexHorizontalCenter,
+                      verticalCenter
+                    )
                   )
-                )
 
               innerCumulatedGraph
                 .updateVertex(updatedVertex)

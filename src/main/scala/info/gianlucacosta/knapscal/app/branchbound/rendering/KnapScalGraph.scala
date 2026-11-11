@@ -32,7 +32,7 @@ object KnapScalGraph {
         val updatedGraph =
           cumulatedGraph
             .addVertex(takingVertex)
-            .addLink(vertex, takingVertex, VisualLink.createDirected())
+            .addLink(vertex, takingVertex, new KnapScalLink)
 
         createSubGraph(updatedGraph, takingVertex)
       })
@@ -46,7 +46,7 @@ object KnapScalGraph {
         val updatedGraph =
           takingGraph
             .addVertex(leavingVertex)
-            .addLink(vertex, leavingVertex, VisualLink.createDirected())
+            .addLink(vertex, leavingVertex, new KnapScalLink)
 
         createSubGraph(updatedGraph, leavingVertex)
       })
