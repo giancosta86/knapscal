@@ -10,8 +10,5 @@ class KnapScalController extends GraphCanvasController
   with NonStructuralEditing {
   override def createVertexNode(vertex: VisualVertex): VertexNode =
     new LabeledVertexNode(graphCanvas, vertex)
-
-  override def createLinkNode(link: VisualLink): LinkNode =
-    new PlainLinkNode(graphCanvas, link)
 }
 
