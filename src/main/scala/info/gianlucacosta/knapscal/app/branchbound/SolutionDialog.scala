@@ -63,6 +63,8 @@ private class SolutionDialog(problem: Problem, solution: Solution) extends Alert
         new KnapScalGraphCanvas {
           graph() =
             KnapScalGraph.create(solution.rootNode)
+
+          adjust(() => graphAdjuster())
         }
 
       hvalue =

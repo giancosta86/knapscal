@@ -1,11 +1,11 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
-import info.gianlucacosta.eighthbridge.fx.{AdjustingGraphCanvas, VertexNode}
+import info.gianlucacosta.eighthbridge.fx.{GraphCanvas, VertexNode}
 import info.gianlucacosta.eighthbridge.fx.graph.{VisualGraph, VisualVertex}
 import scalafx.geometry.Point2D
 import scalafx.Includes._
 
-class KnapScalGraphCanvas extends AdjustingGraphCanvas {
+class KnapScalGraphCanvas extends GraphCanvas {
   private val VerticalGap =
     60
 
@@ -15,9 +15,12 @@ class KnapScalGraphCanvas extends AdjustingGraphCanvas {
   controller() =
     new KnapScalController
 
-  override protected def adjustGraph(graph: VisualGraph): VisualGraph = {
+  def graphAdjuster(): VisualGraph = {
+    val currentGraph =
+      graph()
+
     val vertexNodesByLevel: Map[Int, List[VertexNode]] =
-      getVertexNodesByLevel(graph)
+      getVertexNodesByLevel(currentGraph)
 
     val totalWidthByLevel: Map[Int, Double] =
       vertexNodesByLevel
@@ -84,7 +87,7 @@ class KnapScalGraphCanvas extends AdjustingGraphCanvas {
     val graphWithUpdatedLeafVertexes: VisualGraph =
       leafVertexNodes
         .zipWithIndex
-        .foldLeft(graph) { case (cumulatedGraph, (leafVertexNode, index)) =>
+        .foldLeft(currentGraph) { case (cumulatedGraph, (leafVertexNode, index)) =>
           val updatedLeafVertex =
             leafVertexNode
               .vertex()
