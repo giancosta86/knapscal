@@ -2,16 +2,17 @@ package info.gianlucacosta.knapscal.app.branchbound.rendering
 
 
 import info.gianlucacosta.eighthbridge.fx.graph.{VisualGraph, VisualLink}
+import info.gianlucacosta.eighthbridge.graphs.directed.DirectedGraph
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 
 
 object KnapScalGraph {
-  def create(rootNode: Node): VisualGraph = {
+  def create(rootNode: Node): KnapScalGraph = {
     val rootVertex =
       new KnapScalVertex(rootNode)
 
     val rootGraph =
-      new VisualGraph()
+      new KnapScalGraph()
         .addVertex(rootVertex)
 
     createSubGraph(
@@ -20,11 +21,11 @@ object KnapScalGraph {
     )
   }
 
-  private def createSubGraph(cumulatedGraph: VisualGraph, vertex: KnapScalVertex): VisualGraph = {
+  private def createSubGraph(cumulatedGraph: KnapScalGraph, vertex: KnapScalVertex): KnapScalGraph = {
     val node =
       vertex.node
 
-    val takingGraph: VisualGraph =
+    val takingGraph: KnapScalGraph =
       node.takingNode.map(takingNode => {
         val takingVertex =
           new KnapScalVertex(takingNode)
@@ -32,13 +33,13 @@ object KnapScalGraph {
         val updatedGraph =
           cumulatedGraph
             .addVertex(takingVertex)
-            .addLink(vertex, takingVertex, new KnapScalLink)
+            .addLink(vertex, takingVertex, new KnapScalArc)
 
         createSubGraph(updatedGraph, takingVertex)
       })
         .getOrElse(cumulatedGraph)
 
-    val leavingGraph: VisualGraph =
+    val leavingGraph: KnapScalGraph =
       node.leavingNode.map(leavingNode => {
         val leavingVertex =
           new KnapScalVertex(leavingNode)
@@ -46,7 +47,7 @@ object KnapScalGraph {
         val updatedGraph =
           takingGraph
             .addVertex(leavingVertex)
-            .addLink(vertex, leavingVertex, new KnapScalLink)
+            .addLink(vertex, leavingVertex, new KnapScalArc)
 
         createSubGraph(updatedGraph, leavingVertex)
       })
