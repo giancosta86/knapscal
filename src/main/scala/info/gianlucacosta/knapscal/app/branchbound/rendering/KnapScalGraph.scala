@@ -1,8 +1,5 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
-
-import info.gianlucacosta.eighthbridge.fx.graph.{VisualGraph, VisualLink}
-import info.gianlucacosta.eighthbridge.graphs.directed.DirectedGraph
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 
 

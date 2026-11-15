@@ -1,7 +1,7 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
-import info.gianlucacosta.eighthbridge.fx.graph.VisualVertex
-import info.gianlucacosta.eighthbridge.graphs.facets.{HasCenterSettable, HasLabel, HasSelectedSettable}
+import info.gianlucacosta.eighthbridge.fx.VisualVertex
+import info.gianlucacosta.eighthbridge.graphs.facets.{HasCenterSettable, HasLabel, HasSelectedSettable, HasStyleClasses}
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 import scalafx.geometry.Point2D
 
@@ -10,7 +10,9 @@ class KnapScalVertex(val node: Node)
   extends VisualVertex
     with HasCenterSettable
     with HasSelectedSettable
-    with HasLabel {
+    with HasStyleClasses
+    with HasLabel
+{
   override def label: String =
     if (node.isSolution) {
       (

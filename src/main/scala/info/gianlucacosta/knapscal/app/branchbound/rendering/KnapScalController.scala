@@ -1,9 +1,7 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
-import info.gianlucacosta.eighthbridge.fx.{GraphCanvasController, LinkNode, VertexNode}
-import info.gianlucacosta.eighthbridge.fx.controller.composite.NonStructuralEditing
-import info.gianlucacosta.eighthbridge.fx.graph.{VisualLink, VisualVertex}
-import info.gianlucacosta.eighthbridge.fx.linknodes.plain.PlainLinkNode
+import info.gianlucacosta.eighthbridge.fx.controllers.bundles.NonStructuralEditing
+import info.gianlucacosta.eighthbridge.fx.{GraphCanvasController, LinkNode, VertexNode, VisualVertex}
 import info.gianlucacosta.eighthbridge.fx.vertexnodes.labeled.LabeledVertexNode
 
 class KnapScalController extends GraphCanvasController
