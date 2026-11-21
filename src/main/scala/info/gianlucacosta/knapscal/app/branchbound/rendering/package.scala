@@ -1,7 +1,7 @@
 package info.gianlucacosta.knapscal.app.branchbound
 
 import info.gianlucacosta.eighthbridge.fx.Styles
-import info.gianlucacosta.eighthbridge.graphs.directed.DirectedGraph
+import info.gianlucacosta.eighthbridge.core.directed.DirectedGraph
 import info.gianlucacosta.knapscal.app.App
 
 package object rendering {

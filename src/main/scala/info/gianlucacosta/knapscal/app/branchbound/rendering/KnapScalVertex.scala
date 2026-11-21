@@ -1,7 +1,8 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
 import info.gianlucacosta.eighthbridge.fx.VisualVertex
-import info.gianlucacosta.eighthbridge.graphs.facets.{HasCenterSettable, HasLabel, HasSelectedSettable, HasStyleClasses}
+import info.gianlucacosta.eighthbridge.core.facets.{HasLabel, HasSelectedSettable, HasStyleClasses}
+import info.gianlucacosta.eighthbridge.fx.facets.HasCenterSettable
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 import scalafx.geometry.Point2D
 
