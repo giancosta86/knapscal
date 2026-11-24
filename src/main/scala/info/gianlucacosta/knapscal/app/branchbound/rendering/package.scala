@@ -1,12 +1,12 @@
 package info.gianlucacosta.knapscal.app.branchbound
 
+import info.gianlucacosta.eighthbridge.core.Graph
 import info.gianlucacosta.eighthbridge.fx.Styles
-import info.gianlucacosta.eighthbridge.core.directed.DirectedGraph
 import info.gianlucacosta.knapscal.app.App
 
 package object rendering {
   type KnapScalGraph =
-    DirectedGraph[KnapScalVertex, KnapScalArc]
+    Graph[KnapScalVertex, KnapScalArc]
 
   val Stylesheets: List[String] = List(
     Styles.resourceUrl.toExternalForm,

@@ -1,5 +1,6 @@
 package info.gianlucacosta.knapscal.app.branchbound.rendering
 
+import info.gianlucacosta.eighthbridge.core.Graph
 import info.gianlucacosta.knapscal.knapsack.branchbound.Node
 
 
@@ -9,7 +10,7 @@ object KnapScalGraph {
       new KnapScalVertex(rootNode)
 
     val rootGraph =
-      new KnapScalGraph()
+      Graph.createDirected()
         .addVertex(rootVertex)
 
     createSubGraph(
